@@ -1,0 +1,12 @@
+# Keystone connection routing for services.
+# Founding policy: all WRITES and consistency-sensitive READS go to the primary;
+# only explicitly-safe reads (analytics) may target a replica.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keystone-routing
+data:
+  topology: "single-primary"
+  writes: "primary"
+  reads: "primary"          # safe default; replicas opt-in per query
+  shard_by_portfolio: "false"
