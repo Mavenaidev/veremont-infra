@@ -12,5 +12,3 @@ jobs:
       - uses: actions/checkout@v4
       - name: deploy
         run: deploy/deploy.sh ${{ inputs.service }} ${{ inputs.env }}
-
-# dep bump marker 0
