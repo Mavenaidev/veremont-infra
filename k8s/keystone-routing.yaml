@@ -1,4 +1,4 @@
-# maint seq=56
+# maint seq=61
 # Keystone connection routing for services.
 # Founding policy: all WRITES and consistency-sensitive READS go to the primary;
 # only explicitly-safe reads (analytics) may target a replica.
