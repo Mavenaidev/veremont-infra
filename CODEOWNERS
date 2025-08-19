@@ -1,4 +1,8 @@
-# maint seq=114
 # Groundskeeper review routing.
 * @veremont/eng-platform
 /terraform/ @veremont/eng-platform
+
+# Two-Key Deploy (ADR-008): the money path requires payments owners' review, and
+# the deploy workflow refuses to ship without two distinct approvals.
+/k8s/tollgate.yaml @veremont/eng-payments
+/deploy/ @veremont/eng-platform @veremont/eng-payments
