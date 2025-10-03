@@ -1,4 +1,4 @@
-# maint seq=147
+# maint seq=152
 #!/usr/bin/env bash
 # Groundskeeper deploy tool. Applies k8s manifests for a service to a cluster.
 set -euo pipefail
