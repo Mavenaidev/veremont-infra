@@ -1,4 +1,4 @@
-# maint seq=211
+# maint seq=216
 # Keystone connection routing (ADR-014 / PLT-204: shard phase-1).
 # Portfolios are sharded by hash; reads now prefer replicas to offload the shards.
 apiVersion: v1
