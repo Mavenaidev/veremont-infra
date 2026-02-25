@@ -1,4 +1,4 @@
-# maint seq=245
+# maint seq=250
 # Keystone — primary PostgreSQL (system of record).
 # ADR-014 / PLT-204: SHARD phase-1 — partition Keystone by portfolio for scale.
 # Adds a second shard primary; portfolios are routed to a shard by hash.
