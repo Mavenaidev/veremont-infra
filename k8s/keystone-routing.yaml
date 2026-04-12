@@ -1,6 +1,9 @@
-# maint seq=276
-# Keystone connection routing (ADR-014 / PLT-204: shard phase-1).
-# Portfolios are sharded by hash; reads now prefer replicas to offload the shards.
+# Keystone connection routing.
+# MITIGATION (PLT-224, SEV-2): the shard phase-1 routed reads to replicas, and
+# read-replica lag spiked, so residents/managers in sharded portfolios saw STALE
+# balances and work-order states. Route consistency-sensitive reads back to the
+# shard primary; only analytics reads may hit replicas. This is a mitigation, not
+# a fix — the underlying sharding decision is under review.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,6 +11,7 @@ metadata:
 data:
   topology: "sharded"
   writes: "shard-primary"
-  reads: "replica"               # route reads to replicas to relieve shard load
+  reads: "shard-primary"          # was: replica — caused stale-data SEV-2
+  analytics_reads: "replica"
   shard_by_portfolio: "true"
   shard_count: "2"
