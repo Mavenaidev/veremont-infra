@@ -1,13 +1,13 @@
-# maint seq=276
-# Keystone connection routing (ADR-014 / PLT-204: shard phase-1).
-# Portfolios are sharded by hash; reads now prefer replicas to offload the shards.
+# Keystone connection routing (ADR-021: sharding reverted).
+# Back to single-primary; pgbouncer pools connections. Reads default to primary;
+# replicas opt-in per safe query, as before the shard.
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: keystone-routing
 data:
-  topology: "sharded"
-  writes: "shard-primary"
-  reads: "replica"               # route reads to replicas to relieve shard load
-  shard_by_portfolio: "true"
-  shard_count: "2"
+  topology: "single-primary"     # reverted from: sharded (ADR-014 superseded)
+  writes: "primary"
+  reads: "primary"
+  shard_by_portfolio: "false"    # reverted
+  connection_pooling: "pgbouncer"

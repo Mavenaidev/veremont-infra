@@ -1,29 +1,28 @@
-# maint seq=280
 # Keystone — primary PostgreSQL (system of record).
-# ADR-014 / PLT-204: SHARD phase-1 — partition Keystone by portfolio for scale.
-# Adds a second shard primary; portfolios are routed to a shard by hash.
+# ADR-021 (Accepted 2026-05-12) REVERTS the ADR-014 sharding decision. After the
+# read-replica-lag SEV-2, we go back to a SINGLE primary and add pgbouncer connection
+# pooling instead of partitioning by portfolio. ADR-014 is now Superseded.
 
 resource "aws_db_instance" "keystone_primary" {
-  identifier        = "keystone-shard-0"
+  identifier        = "keystone-primary"
   engine            = "postgres"
   engine_version    = "15.4"
-  instance_class    = "db.r6g.2xlarge"
-  allocated_storage = 500
+  instance_class    = "db.r6g.4xlarge"  # scaled up in lieu of sharding
+  allocated_storage = 1000
   multi_az          = true
 }
 
-resource "aws_db_instance" "keystone_shard_1" {
-  identifier        = "keystone-shard-1"
-  engine            = "postgres"
-  engine_version    = "15.4"
-  instance_class    = "db.r6g.2xlarge"
-  allocated_storage = 500
-  multi_az          = true
-}
+# keystone_shard_1 removed: sharding reverted per ADR-021.
 
 resource "aws_db_instance" "keystone_replica" {
   count               = 2
   identifier          = "keystone-replica-${count.index}"
   replicate_source_db = aws_db_instance.keystone_primary.identifier
   instance_class      = "db.r6g.xlarge"
+}
+
+# pgbouncer connection pooling — the scale answer instead of sharding (ADR-021).
+resource "aws_ecs_service" "pgbouncer" {
+  name            = "keystone-pgbouncer"
+  desired_count   = 2
 }
